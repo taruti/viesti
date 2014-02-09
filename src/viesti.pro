@@ -18,4 +18,5 @@ HEADERS += \
     compose/composewidget.hh \
     mainwindow.hh \
     qt5helper/enchanthighlighter.hh \
+    qt5helper/singletextedit.hh \
 
