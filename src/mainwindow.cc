@@ -1,4 +1,5 @@
 #include <QAction>
+#include "compose/composewidget.hh"
 #include "mainwindow.hh"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(act, SIGNAL(triggered()), this, SLOT(close()));
     this->addAction(act);
 
+    setCentralWidget(new ComposeWidget);
 }
 
 
