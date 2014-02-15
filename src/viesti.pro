@@ -13,10 +13,12 @@ SOURCES += \
     main.cc \
     mainwindow.cc \
     qt5helper/enchanthighlighter.cc \
+    settingsdialog.cc\
 
 HEADERS += \
     compose/composewidget.hh \
     mainwindow.hh \
     qt5helper/enchanthighlighter.hh \
     qt5helper/singletextedit.hh \
+    settingsdialog.hh\
 
