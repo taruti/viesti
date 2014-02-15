@@ -5,9 +5,12 @@
 #include <QSettings>
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <cld2/public/compact_lang_det.h>
+#include <string>
 #include "composewidget.hh"
 #include "../qt5helper/enchanthighlighter.hh"
 #include "../qt5helper/singletextedit.hh"
+
 
 ComposeWidget::ComposeWidget(QWidget *parent) : QWidget(parent) {
 	QSettings s;
@@ -19,7 +22,7 @@ ComposeWidget::ComposeWidget(QWidget *parent) : QWidget(parent) {
 	gl->addWidget(new QLabel("Subject"), 0, 0);
 	auto su = new SingleTextEdit;
 	auto shl = new EnchantHighlighter(su->document());
-	shl->setLanguage("en_US");
+	ehs_.push_back(shl);
 	gl->addWidget(su, 0, 1);
 
 	gl->addWidget(new QLabel("To"), 1, 0);
@@ -31,7 +34,17 @@ ComposeWidget::ComposeWidget(QWidget *parent) : QWidget(parent) {
 	
 	auto te = new QTextEdit;
 	auto hl = new EnchantHighlighter(te->document());
-	hl->setLanguage("en_US");
+	ehs_.push_back(hl);
+	connect(te, &QTextEdit::textChanged, [this,te](){
+			auto u8 = te->toPlainText().toUtf8();
+			bool sure;
+			auto lang = CLD2::DetectLanguage(u8.data(), u8.size(), false, &sure);
+			auto lc = std::string{CLD2::LanguageCode(lang)};
+			if(lc == "en")
+				lc = "en_US";
+			for(auto &&e : ehs_)
+				e->setLanguage(lc);
+		});
 	vb->addWidget(te);
 	vb->setStretchFactor(te,100);
 	setLayout(vb);
