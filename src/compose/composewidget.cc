@@ -2,6 +2,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSettings>
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include "composewidget.hh"
@@ -9,6 +10,9 @@
 #include "../qt5helper/singletextedit.hh"
 
 ComposeWidget::ComposeWidget(QWidget *parent) : QWidget(parent) {
+	QSettings s;
+	s.beginGroup("mail");
+	
 	auto vb = new QVBoxLayout;
 	auto gl = new QGridLayout;
 	vb->addLayout(gl);
@@ -21,6 +25,7 @@ ComposeWidget::ComposeWidget(QWidget *parent) : QWidget(parent) {
 	gl->addWidget(new QLabel("To"), 1, 0);
 	gl->addWidget(new QLabel("From"), 2, 0);
 	auto fc = new QComboBox;
+	fc->addItems(s.value("from").toStringList());
 	fc->setEditable(true);
 	gl->addWidget(fc, 2, 1);
 	
