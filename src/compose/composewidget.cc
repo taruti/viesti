@@ -44,9 +44,11 @@ ComposeWidget::ComposeWidget(QWidget *parent) : QWidget(parent) {
 	gl->addWidget(fc, 2, 1);
 
 	auto tb = new QToolBar;
+	new_act(tb, "Send", [](){});
 //	new_act(tb, "Attach", [](){
 //			QFileDialog::getOpenFileNames();
 //		});
+	new_act(tb, "Close", [this](){ this->close(); });
 	vb->addWidget(tb);
 	
 	auto te = new QTextEdit;
