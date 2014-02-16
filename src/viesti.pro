@@ -13,7 +13,7 @@ SOURCES += \
     db/database.cc \
     db/mailmessage.cc \
     db/mailthread.cc \
-    db/yearlydatabase.cc \
+    db/singledatabase.cc \
     main.cc \
     mainwindow.cc \
     qt5helper/enchanthighlighter.cc \
@@ -26,7 +26,7 @@ HEADERS += \
     db/globals.hh \
     db/mailmessage.hh \
     db/mailthread.hh \
-    db/yearlydatabase.hh \
+    db/singledatabase.hh \
     mainwindow.hh \
     qt5helper/enchanthighlighter.hh \
     qt5helper/singletextedit.hh \

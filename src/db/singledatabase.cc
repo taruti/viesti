@@ -1,15 +1,15 @@
 #include <vmime/vmime.hpp>
 
 #include "globals.hh"
-#include "yearlydatabase.hh"
+#include "singledatabase.hh"
 
-void YearlyDatabase::add_mail_address(std::string email, std::string name) {
+void SingleDatabase::add_mail_address(std::string email, std::string name) {
 	auto &&ref = addrs_[email];
 	if(!name.empty())
 		ref = name;
 }
 
-void YearlyDatabase::add_addresses(vmime::shared_ptr<vmime::header> &hdr) {
+void SingleDatabase::add_addresses(vmime::shared_ptr<vmime::header> &hdr) {
     if(hdr->hasField("From")) {
 		auto mb = hdr->From()->getValue<vmime::mailbox>();
 		add_mail_address(mb->getName().getConvertedText(utf8), mb->getEmail().toString());
@@ -21,7 +21,7 @@ void YearlyDatabase::add_addresses(vmime::shared_ptr<vmime::header> &hdr) {
 	}
 }
 
-void YearlyDatabase::add_message(const std::string &raw) {
+void SingleDatabase::add_message(const std::string &raw) {
 	vmime::message msg;
 	msg.parse(raw);
 	auto hdr = msg.getHeader();

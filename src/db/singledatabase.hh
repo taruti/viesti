@@ -1,5 +1,5 @@
-#ifndef YEARLYDATABASE_HH
-#define YEARLYDATABASE_HH 
+#ifndef SINGLEDATABASE_HH
+#define SINGLEDATABASE_HH 
 
 #include <cstddef>
 #include <string>
@@ -15,16 +15,16 @@ namespace vmime {
 	template<typename T> class shared_ptr;
 }
 
-class YearlyDatabase {
+class SingleDatabase {
 	std::string path_;
 	using map_type = boost::container::flat_map<std::string, std::string>;
 	map_type addrs_;
 	void add_addresses(vmime::shared_ptr<vmime::header> &hdr);
 	void add_mail_address(std::string, std::string);
 public:
-	YearlyDatabase(std::string path) : path_(path) {}
+	SingleDatabase(std::string path) : path_(path) {}
 	void add_message(const std::string &msg);
 	int naddrs() const { return addrs_.size(); }
 };
 
-#endif /* YEARLYDATABASE_HH */
+#endif /* SINGLEDATABASE_HH */
