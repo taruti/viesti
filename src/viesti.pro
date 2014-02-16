@@ -18,6 +18,7 @@ SOURCES += \
     mainwindow.cc \
     qt5helper/enchanthighlighter.cc \
     settingsdialog.cc\
+    util/digest.cc\
 
 HEADERS += \
     compose/composewidget.hh \
@@ -30,4 +31,6 @@ HEADERS += \
     qt5helper/enchanthighlighter.hh \
     qt5helper/singletextedit.hh \
     settingsdialog.hh\
+    util/digest.hh\
+    util/fd.hh\
 
