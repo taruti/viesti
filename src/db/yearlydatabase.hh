@@ -7,9 +7,13 @@
 #include <vector>
 
 #include <boost/container/flat_map.hpp>
-#include <vmime/vmime.hpp>
 
 using Offset = std::int64_t;
+
+namespace vmime {
+	class header;
+	template<typename T> class shared_ptr;
+}
 
 class YearlyDatabase {
 	std::string path_;

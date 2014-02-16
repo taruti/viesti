@@ -1,3 +1,5 @@
+#include <vmime/vmime.hpp>
+
 #include "globals.hh"
 #include "yearlydatabase.hh"
 
