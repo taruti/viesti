@@ -19,7 +19,9 @@ void YearlyDatabase::add_addresses(vmime::shared_ptr<vmime::header> &hdr) {
 	}
 }
 
-void YearlyDatabase::add_message(vmime::message &msg) {
+void YearlyDatabase::add_message(const std::string &raw) {
+	vmime::message msg;
+	msg.parse(raw);
 	auto hdr = msg.getHeader();
 	add_addresses(hdr);
 }

@@ -19,7 +19,7 @@ class YearlyDatabase {
 	void add_mail_address(std::string, std::string);
 public:
 	YearlyDatabase(std::string path) : path_(path) {}
-	void add_message(vmime::message &msg);
+	void add_message(const std::string &msg);
 	int naddrs() const { return addrs_.size(); }
 };
 
