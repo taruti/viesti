@@ -1,9 +1,12 @@
+#include <QAction>
 #include <QComboBox>
+#include <QFileDialog>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QSettings>
 #include <QTextEdit>
+#include <QToolBar>
 #include <QVBoxLayout>
 #include <cld2/public/compact_lang_det.h>
 #include <string>
@@ -11,6 +14,14 @@
 #include "../qt5helper/enchanthighlighter.hh"
 #include "../qt5helper/singletextedit.hh"
 
+
+template<typename T>
+static QAction* new_act(QWidget *wdg, const QString &text, T functor) {
+	auto act = new QAction(text, nullptr);
+	act->connect(act, &QAction::triggered, functor);
+	wdg->addAction(act);
+	return act;
+}
 
 ComposeWidget::ComposeWidget(QWidget *parent) : QWidget(parent) {
 	QSettings s;
@@ -31,6 +42,12 @@ ComposeWidget::ComposeWidget(QWidget *parent) : QWidget(parent) {
 	fc->addItems(s.value("from").toStringList());
 	fc->setEditable(true);
 	gl->addWidget(fc, 2, 1);
+
+	auto tb = new QToolBar;
+//	new_act(tb, "Attach", [](){
+//			QFileDialog::getOpenFileNames();
+//		});
+	vb->addWidget(tb);
 	
 	auto te = new QTextEdit;
 	auto hl = new EnchantHighlighter(te->document());
