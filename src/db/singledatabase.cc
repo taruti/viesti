@@ -3,6 +3,14 @@
 #include "globals.hh"
 #include "singledatabase.hh"
 
+#include <sys/stat.h>
+#include <sys/types.h>
+
+SingleDatabase::SingleDatabase(std::string path) : path_(std::move(path)) {
+	mkdir(path_.c_str(), 0700);
+    db_ = Xapian::WritableDatabase(path_ + "/xapian.db", Xapian::DB_CREATE_OR_OPEN);
+}
+
 void SingleDatabase::add_mail_address(std::string email, std::string name) {
 	auto &&ref = addrs_[email];
 	if(!name.empty())

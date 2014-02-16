@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <boost/container/flat_map.hpp>
+#include <xapian.h>
 
 using Offset = std::int64_t;
 
@@ -19,10 +20,11 @@ class SingleDatabase {
 	std::string path_;
 	using map_type = boost::container::flat_map<std::string, std::string>;
 	map_type addrs_;
+	Xapian::WritableDatabase db_;
 	void add_addresses(vmime::shared_ptr<vmime::header> &hdr);
 	void add_mail_address(std::string, std::string);
 public:
-	SingleDatabase(std::string path) : path_(path) {}
+	SingleDatabase(std::string path);
 	void add_message(const std::string &msg);
 	int naddrs() const { return addrs_.size(); }
 };
