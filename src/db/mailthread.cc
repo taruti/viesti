@@ -47,6 +47,11 @@ void MailThread::add_message(i64 id, const vmime::message &msg) {
 	froms_.push_back(sfrom);
 }
 
+bool MailThread::contains(const Digest &qmid) const {
+    return std::find(mids_.begin(), mids_.end(), qmid) != mids_.end();
+}
+
+
 void MailThread::join(const MailThread &o) {
     if(o.utc_date_ > utc_date_) {
         utc_date_ = o.utc_date_;

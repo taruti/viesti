@@ -10,6 +10,9 @@ class Digest {
 public:
 	Digest() : d_{0} {}
 	explicit Digest(const std::string &hashme);
+	bool operator==(const Digest &o) const {
+		return 0 == std::memcmp(d_, o.d_, SIZE);
+	}
 
 	std::string qstring() const {
 		std::string res{1 + SIZE, 'Q'};

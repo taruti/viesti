@@ -1,7 +1,9 @@
 #include <vmime/vmime.hpp>
 
 #include "globals.hh"
+#include "mailthread.hh"
 #include "singledatabase.hh"
+#include "../util/digest.hh"
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -29,9 +31,30 @@ void SingleDatabase::add_addresses(vmime::shared_ptr<vmime::header> &hdr) {
 	}
 }
 
+
 void SingleDatabase::add_message(const std::string &raw) {
 	vmime::message msg;
 	msg.parse(raw);
 	auto hdr = msg.getHeader();
+
+    auto qmid = Digest{hdr->MessageId()->getValue<vmime::messageId>()->getId()};
+	
+	Xapian::Document doc;
+	MailThread mt;
+    bool update = false;
+    {
+        Xapian::Enquire mideq {db_};
+        mideq.set_query(Xapian::Query{qmid.qstring()});
+        auto mset = mideq.get_mset(0, 1);
+        if(mset.size()) {
+            update = true;
+            doc= mset.begin().get_document();
+            mt = MailThread::decode(doc.get_data());
+            if(mt.contains(qmid))
+                return;
+		}
+    }
+	
 	add_addresses(hdr);
+
 }
