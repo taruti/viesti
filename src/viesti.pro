@@ -5,7 +5,7 @@ CONFIG += c++11
 CONFIG += debug
 
 INCLUDEPATH += /usr/include/enchant
-LIBS += -lenchant -lcld2 -lvmime -lxapian
+LIBS += -lenchant -lcld2 -lvmime -lxapian -llz4
 
 
 SOURCES += \
