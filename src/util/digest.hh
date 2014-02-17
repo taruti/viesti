@@ -15,7 +15,7 @@ public:
 	}
 
 	std::string qstring() const {
-		std::string res{1 + SIZE, 'Q'};
+		std::string res(1 + SIZE, 'Q');
 		std::memcpy(&res[1], d_, SIZE);
 		return res;
 	}
