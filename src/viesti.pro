@@ -5,7 +5,7 @@ CONFIG += c++11
 CONFIG += debug
 
 INCLUDEPATH += /usr/include/enchant
-LIBS += -lenchant -lcld2 -lvmime
+LIBS += -lenchant -lcld2 -lvmime -lxapian
 
 
 SOURCES += \
@@ -31,6 +31,7 @@ HEADERS += \
     qt5helper/enchanthighlighter.hh \
     qt5helper/singletextedit.hh \
     settingsdialog.hh\
+    util/common.hh\
     util/digest.hh\
     util/fd.hh\
 
