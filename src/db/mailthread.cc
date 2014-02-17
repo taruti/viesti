@@ -13,8 +13,6 @@ extern "C" {
 #include "mailthread.hh"
  
 void MailThread::add_message(i64 id, const vmime::message &msg) {
-    if(std::find(msgs_.begin(), msgs_.end(), id) != msgs_.end())
-        return;
     msgs_.push_back(id);
     
     auto hdr = msg.getHeader();
@@ -88,3 +86,11 @@ MailThread MailThread::decode(const std::string &s) {
     return mt;
 }
 
+
+#include <cereal/archives/json.hpp>
+std::string MailThread::dump() const {
+    std::stringstream ss;
+    cereal::JSONOutputArchive oa{ss};
+    oa(*this);
+    return ss.str();
+}

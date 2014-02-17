@@ -9,6 +9,8 @@
 #include <boost/container/flat_map.hpp>
 #include <xapian.h>
 
+#include "../util/fd.hh"
+
 using Offset = std::int64_t;
 
 namespace vmime {
@@ -21,8 +23,11 @@ class SingleDatabase {
 	using map_type = boost::container::flat_map<std::string, std::string>;
 	map_type addrs_;
 	Xapian::WritableDatabase db_;
+	Fd mailbox_;
+	Offset mailbox_offset_;
 	void add_addresses(vmime::shared_ptr<vmime::header> &hdr);
 	void add_mail_address(std::string, std::string);
+	Offset write_data(const std::string &raw);
 public:
 	SingleDatabase(std::string path);
 	void add_message(const std::string &msg);

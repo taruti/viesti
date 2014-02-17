@@ -48,6 +48,7 @@ public:
     }
 
 	std::string encode() const;
+	std::string dump() const;
     static MailThread decode(const std::string &s);
 };
 
