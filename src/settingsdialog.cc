@@ -24,6 +24,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 	s_.endGroup();
 	mailFrame->setLayout(gl);
 	tb->addTab(mailFrame, "Mail");
+
+	mail_sort_ = new QTextEdit;
+	mail_sort_->setPlainText(s_.value("mail_sort").toString());
+	tb->addTab(mail_sort_, "Mail sorting");
 	
 	auto apply = new QPushButton("Apply");
 	connect(apply, SIGNAL(pressed()), this, SLOT(accept()));
@@ -35,5 +39,6 @@ void SettingsDialog::accept() {
 	s_.beginGroup("mail");
 	s_.setValue("from", from_->toPlainText().split('\n', QString::SkipEmptyParts));
 	s_.endGroup();
+	s_.setValue("mail_sort", mail_sort_->toPlainText());
 	close();
 }
