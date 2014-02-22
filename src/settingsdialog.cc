@@ -5,7 +5,7 @@
 #include "settingsdialog.hh"
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
-    QDialog(parent) {
+	QDialog(parent) {
 	int i = 0;
 	auto gl = new QGridLayout;
 	s_.beginGroup("mail");
@@ -14,7 +14,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 	from_->setPlainText(s_.value("from").toStringList().join('\n'));
 	gl->addWidget(from_, i++, 1);
 	s_.endGroup();
-	
 	auto apply = new QPushButton("Apply");
 	connect(apply, SIGNAL(pressed()), this, SLOT(accept()));
 	gl->addWidget(apply, i, 0);

@@ -21,30 +21,30 @@ using i64 = std::int64_t;
 namespace endian {
 #ifdef __LITTLE_ENDIAN__
 
-static inline u8  le(u8  v) {
-    return v;
-}
-static inline u16 le(u16 v) {
-    return v;
-}
-static inline u32 le(u32 v) {
-    return v;
-}
-static inline u64 le(u64 v) {
-    return v;
-}
-static inline u8  be(u8  v) {
-    return v;
-}
-static inline u16 be(u16 v) {
-    return ((v&0xFF)<<8) | (v>>8);
-}
-static inline u32 be(u32 v) {
-    return __builtin_bswap32(v);
-}
-static inline u64 be(u64 v) {
-    return __builtin_bswap64(v);
-}
+	static inline u8  le(u8  v) {
+		return v;
+	}
+	static inline u16 le(u16 v) {
+		return v;
+	}
+	static inline u32 le(u32 v) {
+		return v;
+	}
+	static inline u64 le(u64 v) {
+		return v;
+	}
+	static inline u8  be(u8  v) {
+		return v;
+	}
+	static inline u16 be(u16 v) {
+		return ((v & 0xFF) << 8) | (v >> 8);
+	}
+	static inline u32 be(u32 v) {
+		return __builtin_bswap32(v);
+	}
+	static inline u64 be(u64 v) {
+		return __builtin_bswap64(v);
+	}
 
 #elif __BIG_ENDIAN__
 #error "Big endian architectures not supported, FIXME"

@@ -1,5 +1,5 @@
 #ifndef DIGEST_HH
-#define DIGEST_HH 
+#define DIGEST_HH
 
 #include <string>
 #include <cstring>
@@ -8,7 +8,7 @@ class Digest {
 	enum { SIZE = 20 };
 	unsigned char d_[SIZE];
 public:
-	Digest() : d_{0} {}
+	Digest() : d_ {0} {}
 	explicit Digest(const std::string &hashme);
 	bool operator==(const Digest &o) const {
 		return 0 == std::memcmp(d_, o.d_, SIZE);

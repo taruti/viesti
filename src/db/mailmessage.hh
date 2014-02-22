@@ -1,3 +1,3 @@
 #ifndef MAILMESSAGE_HH
-#define MAILMESSAGE_HH 
+#define MAILMESSAGE_HH
 #endif /* MAILMESSAGE_HH */
