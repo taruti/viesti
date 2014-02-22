@@ -9,7 +9,7 @@ LIBS += -lenchant -lcld2 -lvmime -lxapian -llz4
 
 
 SOURCES += \
-    compose/composewidget.cc \
+    compose/composedialog.cc \
     db/database.cc \
     db/mailmessage.cc \
     db/mailthread.cc \
@@ -21,7 +21,7 @@ SOURCES += \
     util/digest.cc\
 
 HEADERS += \
-    compose/composewidget.hh \
+    compose/composedialog.hh \
     db/database.hh \
     db/globals.hh \
     db/mailmessage.hh \

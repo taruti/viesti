@@ -10,7 +10,7 @@
 #include <QVBoxLayout>
 #include <cld2/public/compact_lang_det.h>
 #include <string>
-#include "composewidget.hh"
+#include "composedialog.hh"
 #include "../qt5helper/enchanthighlighter.hh"
 #include "../qt5helper/singletextedit.hh"
 
@@ -23,7 +23,7 @@ static QAction* new_act(QWidget *wdg, const QString &text, T functor) {
 	return act;
 }
 
-ComposeWidget::ComposeWidget(QWidget *parent) : QWidget(parent) {
+ComposeDialog::ComposeDialog(QWidget *parent) : QDialog(parent) {
 	QSettings s;
 	s.beginGroup("mail");
 	auto vb = new QVBoxLayout;
