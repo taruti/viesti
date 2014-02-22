@@ -1,3 +1,7 @@
+viesti source code is licensed under the MIT license,
+but because it links with vmime all resulting binaries
+end up under the GPL.
+
 Copyright (c) 2014 Taru Karttunen <taruti@taruti.net>
 
  Permission is hereby granted, free of charge, to any person
