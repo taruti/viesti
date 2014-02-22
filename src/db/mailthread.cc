@@ -55,8 +55,10 @@ bool MailThread::contains(const Digest &qmid) const {
     return std::find(mids_.begin(), mids_.end(), qmid) != mids_.end();
 }
 
-
+#include <iostream>
 void MailThread::join(const MailThread &o) {
+	std::cout<<"J0\t"<<dump()<<"\n";
+	std::cout<<"J1\t"<<o.dump()<<"\n";
     if(o.utc_date1_ > utc_date1_) {
         utc_date1_ = o.utc_date1_;
         subject_ = o.subject_;
