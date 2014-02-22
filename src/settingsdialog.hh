@@ -10,6 +10,7 @@ class SettingsDialog : public QDialog {
 	QSettings s_;
 	QTextEdit *from_;
 	QTextEdit *mail_sort_;
+	QTextEdit *mail_sources_;
 public:
 	SettingsDialog(QWidget *parent = nullptr);
 public slots:
