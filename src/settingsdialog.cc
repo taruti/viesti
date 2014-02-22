@@ -1,11 +1,19 @@
+#include <QFrame>
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QTabWidget>
+#include <QVBoxLayout>
 
 #include "settingsdialog.hh"
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
 	QDialog(parent) {
+	auto vb = new QVBoxLayout;
+	auto tb = new QTabWidget;
+	vb->addWidget(tb);
+
+	auto mailFrame = new QFrame;
 	int i = 0;
 	auto gl = new QGridLayout;
 	s_.beginGroup("mail");
@@ -14,10 +22,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 	from_->setPlainText(s_.value("from").toStringList().join('\n'));
 	gl->addWidget(from_, i++, 1);
 	s_.endGroup();
+	mailFrame->setLayout(gl);
+	tb->addTab(mailFrame, "Mail");
+	
 	auto apply = new QPushButton("Apply");
 	connect(apply, SIGNAL(pressed()), this, SLOT(accept()));
-	gl->addWidget(apply, i, 0);
-	setLayout(gl);
+	vb->addWidget(apply);
+	setLayout(vb);
 }
 
 void SettingsDialog::accept() {
