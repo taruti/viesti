@@ -7,7 +7,8 @@
 #include "../util/digest.hh"
 
 class MailThread {
-    std::time_t utc_date_ = 0;
+    std::time_t utc_date0_ = 0;
+    std::time_t utc_date1_ = 0;
     std::string subject_ = "";
     std::vector<std::string> froms_ = {};
     std::vector<i64> msgs_ = {};
@@ -16,14 +17,16 @@ public:
     MailThread() {}
     MailThread(const MailThread&) = delete;
     MailThread(MailThread &&o) noexcept {
-        utc_date_ = o.utc_date_;
+        utc_date0_ = o.utc_date0_;
+        utc_date1_ = o.utc_date1_;
         subject_ = std::move(o.subject_);
         froms_ = std::move(o.froms_);
         msgs_ = std::move(o.msgs_);
         mids_ = std::move(o.mids_);
     }
     MailThread& operator=(MailThread&& o) noexcept {
-        utc_date_ = o.utc_date_;
+        utc_date0_ = o.utc_date0_;
+        utc_date1_ = o.utc_date1_;
         subject_ = std::move(o.subject_);
         froms_ = std::move(o.froms_);
         msgs_ = std::move(o.msgs_);
@@ -44,7 +47,7 @@ public:
 	template<class Archive>
     void serialize(Archive & archive)
     {
-        archive(utc_date_, subject_, froms_, msgs_, mids_);
+        archive(utc_date0_, utc_date1_, subject_, froms_, msgs_, mids_);
     }
 
 	std::string encode() const;

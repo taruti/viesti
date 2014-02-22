@@ -11,7 +11,12 @@ extern "C" {
 
 #include "globals.hh"
 #include "mailthread.hh"
- 
+
+static void vector_add(std::vector<std::string>&vec, std::string s) {
+	if(std::find(vec.begin(), vec.end(), s) == vec.end())
+		vec.push_back(s);
+}
+
 void MailThread::add_message(i64 id, const vmime::message &msg) {
     msgs_.push_back(id);
     
@@ -27,22 +32,23 @@ void MailThread::add_message(i64 id, const vmime::message &msg) {
     tm.tm_year -= 1900;
     tm.tm_min += zonemin;
     auto utc = timegm(&tm);
-    bool newest = utc > utc_date_;
+    bool newest = utc > utc_date1_;
 
     if(newest) {
-        utc_date_ = utc;
+        utc_date1_ = utc;
 
         auto subj = hdr->Subject()->getValue<vmime::text>()->getConvertedText(utf8);
         if(subj.size())
             subject_ = subj;
     }
+	utc_date0_ = std::min(utc_date0_, utc);
 
 	auto from = hdr->From()->getValue<vmime::mailbox>();
 	auto ft = from->getName();
 	std::string sfrom{from->getEmail().toString()};
 	if(!ft.isEmpty())
 		sfrom = ft.getConvertedText(utf8) + " <" + sfrom + ">";
-	froms_.push_back(sfrom);
+	vector_add(froms_, sfrom);
 }
 
 bool MailThread::contains(const Digest &qmid) const {
@@ -51,12 +57,13 @@ bool MailThread::contains(const Digest &qmid) const {
 
 
 void MailThread::join(const MailThread &o) {
-    if(o.utc_date_ > utc_date_) {
-        utc_date_ = o.utc_date_;
+    if(o.utc_date1_ > utc_date1_) {
+        utc_date1_ = o.utc_date1_;
         subject_ = o.subject_;
     }
+	utc_date0_ = std::min(utc_date0_, o.utc_date0_);
     for(auto &&e : o.froms_)
-        froms_.push_back(e);
+        vector_add(froms_, e);
     for(auto &&e : o.msgs_)
         msgs_.push_back(e);
     for(auto &&e : o.mids_)
@@ -65,7 +72,7 @@ void MailThread::join(const MailThread &o) {
 
 std::string MailThread::date() const {
     struct tm tm;
-    localtime_r(&utc_date_, &tm);
+    localtime_r(&utc_date1_, &tm);
     std::string s(32, '\0');
     s.resize(strftime(&s[0], 32, "%F %R", &tm));
     return s;
