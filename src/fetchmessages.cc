@@ -28,16 +28,16 @@ void fetchMessagesFrom(const std::string &source, const std::string &scriptSourc
 	for(auto&& msg : msgs) {
 		MailMessage mm(msg);
 		auto hdr = msg->getHeader();
-		sel::State L{true};
+		sel::State L;
 		std::string from;
 		if(hdr->hasField("From"))
 			from = hdr->From()->getValue<vmime::mailbox>()->getEmail().toString();
 		L["from"] = from;
 		L["year"] = hdr->Date()->getValue<vmime::datetime>()->getYear();
-		L["match_from"] = std::function<bool(std::string)>([&](std::string f) { return mm.match_from(f); });
-		L["match_addr"] = std::function<bool(std::string)>([&](std::string f) { return mm.match_addr(f); });
-		
-		L(scriptSource.data());
+		L["match_from"] = [&](std::string f) { return mm.match_from(f); };
+		L["match_addr"] = [&](std::string f) { return mm.match_addr(f); };
+		L["store"] = [&](std::string s) { std::cout<<s<<"\n"; };
+		L(scriptSource.c_str());
 	}
 }
 
