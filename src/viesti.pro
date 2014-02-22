@@ -5,7 +5,7 @@ CONFIG += c++11
 CONFIG += debug
 
 INCLUDEPATH += /usr/include/enchant
-LIBS += -lenchant -lcld2 -lvmime -lxapian -llz4
+LIBS += -lenchant -lcld2 -lvmime -lxapian -llz4 -llua
 
 
 SOURCES += \
@@ -14,6 +14,7 @@ SOURCES += \
     db/mailmessage.cc \
     db/mailthread.cc \
     db/singledatabase.cc \
+    fetchmessages.cc \
     main.cc \
     mainwindow.cc \
     qt5helper/enchanthighlighter.cc \

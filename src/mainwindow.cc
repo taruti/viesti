@@ -13,12 +13,19 @@ static SettingsDialog* settingsDialog() {
 	return sa;
 }
 
+void fetchMessages();
+
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
 	setWindowTitle("viesti");
-	// ctrl-n compose message
+	// ctrl-f fetch messages
 	auto act = new QAction(this);
+	act->setShortcut(Qt::Key_F | Qt::CTRL);
+	connect(act, &QAction::triggered, fetchMessages);
+	this->addAction(act);
+	// ctrl-n compose message
+	act = new QAction(this);
 	act->setShortcut(Qt::Key_N | Qt::CTRL);
 	connect(act, &QAction::triggered, []() { composeDialog()->show(); });
 	this->addAction(act);
