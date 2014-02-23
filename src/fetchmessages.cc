@@ -3,12 +3,14 @@
 #include <selene.h>
 #include <vmime/vmime.hpp>
 
+#include "logwindow.hh"
 #include "db/mailmessage.hh"
 
 #include <iostream>
 
 
 void fetchMessagesFrom(const std::string &source, const std::string &scriptSource) {
+	log("Fetching messages from: "+source);
 	vmime::utility::url url(source);
 	auto isMaildir = url.getProtocol() == std::string("maildir");
 	auto session = vmime::make_shared<vmime::net::session>();

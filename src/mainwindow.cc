@@ -1,5 +1,6 @@
 #include <QAction>
 #include "compose/composedialog.hh"
+#include "logwindow.hh"
 #include "mainwindow.hh"
 #include "settingsdialog.hh"
 
@@ -23,6 +24,11 @@ MainWindow::MainWindow(QWidget *parent)
 	auto act = new QAction(this);
 	act->setShortcut(Qt::Key_F | Qt::CTRL);
 	connect(act, &QAction::triggered, fetchMessages);
+	this->addAction(act);
+	// ctrl-l log window
+	act = new QAction(this);
+	act->setShortcut(Qt::Key_L | Qt::CTRL);
+	connect(act, &QAction::triggered, []() { LogWindow::instance()->show(); });
 	this->addAction(act);
 	// ctrl-n compose message
 	act = new QAction(this);

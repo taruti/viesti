@@ -15,6 +15,7 @@ SOURCES += \
     db/mailthread.cc \
     db/singledatabase.cc \
     fetchmessages.cc \
+    logwindow.cc \
     main.cc \
     mainwindow.cc \
     qt5helper/enchanthighlighter.cc \
@@ -28,6 +29,7 @@ HEADERS += \
     db/mailmessage.hh \
     db/mailthread.hh \
     db/singledatabase.hh \
+    logwindow.hh \
     mainwindow.hh \
     qt5helper/enchanthighlighter.hh \
     qt5helper/singletextedit.hh \
