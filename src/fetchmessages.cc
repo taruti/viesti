@@ -4,6 +4,7 @@
 #include <vmime/vmime.hpp>
 
 #include "logwindow.hh"
+#include "db/globals.hh"
 #include "db/mailmessage.hh"
 
 #include <iostream>
@@ -35,6 +36,7 @@ void fetchMessagesFrom(const std::string &source, const std::string &scriptSourc
 		if(hdr->hasField("From"))
 			from = hdr->From()->getValue<vmime::mailbox>()->getEmail().toString();
 		L["from"] = from;
+		L["subject"] = hdr->Subject()->getValue<vmime::text>()->getConvertedText(utf8);
 		L["year"] = hdr->Date()->getValue<vmime::datetime>()->getYear();
 		L["log"] = [](std::string msg) { log(msg); };
 		L["match_from"] = [&](std::string f) { return mm.match_from(f); };
@@ -50,5 +52,9 @@ void fetchMessages() {
 	s.beginGroup("mail");
 	auto sources = s.value("sources").toStringList();
 	for(auto it = sources.constBegin(); it != sources.constEnd(); ++it)
-		fetchMessagesFrom(it->toStdString(), script);
+		try {
+			fetchMessagesFrom(it->toStdString(), script);
+		} catch(std::exception &e) {
+			log(std::string("Exception while fetching messages: ")+e.what());
+		}
 }
