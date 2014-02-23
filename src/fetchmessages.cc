@@ -36,6 +36,7 @@ void fetchMessagesFrom(const std::string &source, const std::string &scriptSourc
 			from = hdr->From()->getValue<vmime::mailbox>()->getEmail().toString();
 		L["from"] = from;
 		L["year"] = hdr->Date()->getValue<vmime::datetime>()->getYear();
+		L["log"] = [](std::string msg) { log(msg); };
 		L["match_from"] = [&](std::string f) { return mm.match_from(f); };
 		L["match_addr"] = [&](std::string f) { return mm.match_addr(f); };
 		L["store"] = [&](std::string s) { std::cout<<s<<"\n"; };
