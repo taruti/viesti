@@ -31,17 +31,16 @@ public:
 		if(regcomp(&re, regex.c_str(), REG_EXTENDED | REG_ICASE | REG_NOSUB) != 0)
 			return false;
 
-		if(hdr_->hasField("From")) {
-			auto from = hdr_->From()->getValue<vmime::mailbox>()->getEmail().toString();
-			if(regexec(&re, from.c_str(), 0, nullptr, 0) == 0)
-				return true;
-		}
+		for(auto && name : {"From", "Delivered-To"})
+			if(auto f = hdr_->findField(name))
+				if(regexec(&re, f->getValue<vmime::mailbox>()->getEmail().toString().c_str(), 0, nullptr, 0) == 0)
+					return true;
 		
 		for(auto && name : {
 				"To", "Cc", "Bcc"
 					})
-			if(hdr_->hasField(name))
-				for(auto && mb : hdr_->findField(name)->getValue<vmime::addressList>()->toMailboxList()->getMailboxList())
+			if(auto f = hdr_->findField(name))
+				for(auto && mb : f->getValue<vmime::addressList>()->toMailboxList()->getMailboxList())
 					if(regexec(&re, mb->getEmail().toString().c_str(), 0, nullptr, 0) == 0)
 						return true;
 
