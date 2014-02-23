@@ -7,7 +7,9 @@
 #include "../util/digest.hh"
 
 class MailThread {
-	std::time_t utc_date0_ = 0;
+	// First date, combined with std::min, thus starts from the max value
+	std::time_t utc_date0_ = std::numeric_limits<time_t>::max();
+	// Last date
 	std::time_t utc_date1_ = 0;
 	std::string subject_ = "";
 	std::vector<std::string> froms_ = {};
