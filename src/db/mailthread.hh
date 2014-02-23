@@ -11,9 +11,13 @@ class MailThread {
 	std::time_t utc_date0_ = std::numeric_limits<time_t>::max();
 	// Last date
 	std::time_t utc_date1_ = 0;
+	// Last subject
 	std::string subject_ = "";
+	// Vector of unique from addresses for display purposes
 	std::vector<std::string> froms_ = {};
+	// Message indexes in mailbox
 	std::vector<i64> msgs_ = {};
+	// Digests of message-ids in thread
 	std::vector<Digest> mids_ = {};
 public:
 	MailThread() {}

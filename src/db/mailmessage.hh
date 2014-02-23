@@ -16,6 +16,7 @@ public:
 		msg_(msg), hdr_(msg_->getHeader())
 		{}
 
+	// Match From against a regex
 	bool match_from(std::string regex) {
 		regex_t re;
 		if(regcomp(&re, regex.c_str(), REG_EXTENDED | REG_ICASE | REG_NOSUB) != 0)
@@ -26,6 +27,7 @@ public:
 		return regexec(&re, from.c_str(), 0, nullptr, 0) == 0;
 	}
 
+	// Match From, Delivered-To, To, Cc, Bcc against a regex
 	bool match_addr(std::string regex) {
 		regex_t re;
 		if(regcomp(&re, regex.c_str(), REG_EXTENDED | REG_ICASE | REG_NOSUB) != 0)
