@@ -65,5 +65,5 @@ void SettingsDialog::accept() {
 
 SettingsDialog* SettingsDialog::instance() {
 	static SettingsDialog s;
-	return &s
+	return &s;
 }
