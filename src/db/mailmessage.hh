@@ -10,13 +10,21 @@ extern "C" {
 #include <regex.h>
 }
 
+struct MailStore {
+	vmime::shared_ptr<vmime::net::session> session;
+	vmime::shared_ptr<vmime::net::store> store;
+	vmime::shared_ptr<vmime::net::folder> folder;
+};
+
 class MailMessage {
 	std::string raw_cache_ = {};
 	vmime::shared_ptr<vmime::net::message> msg_;
 	vmime::shared_ptr<const vmime::header> hdr_;
+	std::shared_ptr<MailStore> ms_;
 public:
-	MailMessage(vmime::shared_ptr<vmime::net::message> msg) :
-		msg_(msg), hdr_(msg_->getHeader())
+	MailMessage(vmime::shared_ptr<vmime::net::message> msg,
+				std::shared_ptr<MailStore> ms) :
+		msg_(msg), hdr_(msg_->getHeader()), ms_(ms)
 		{}
 
 	// Get raw message source

@@ -33,7 +33,9 @@ void MailThread::add_message(i64 id, MailMessage &msg) {
 	bool newest = utc > utc_date1_;
 	if(newest) {
 		utc_date1_ = utc;
-		auto subj = hdr->Subject()->getValue<vmime::text>()->getConvertedText(utf8);
+		std::string subj;
+		if(auto f = hdr->findField("Subject"))
+			subj = f->getValue<vmime::text>()->getConvertedText(utf8);
 		if(subj.size())
 			subject_ = subj;
 	}

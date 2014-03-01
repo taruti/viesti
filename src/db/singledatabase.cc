@@ -18,7 +18,7 @@ extern "C" {
  
 std::once_flag meta_init_flag;
 
-SingleDatabase::SingleDatabase(std::string path) : path_(std::move(path)) {
+SingleDatabase::SingleDatabase(const std::string &path) : path_(path) {
 	std::call_once(meta_init_flag, []() { qRegisterMetaType<std::shared_ptr<MailMessage>>(); });
 	mkdir(path_.c_str(), 0700);
 	Fd fd {open((path_ + "/mailbox").c_str(), O_APPEND | O_CREAT | O_RDWR, 0600)};

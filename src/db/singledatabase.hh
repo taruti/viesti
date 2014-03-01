@@ -20,6 +20,7 @@ using Offset = std::int64_t;
 
 
 class SingleDatabase : public QThread {
+	Q_OBJECT
 	std::string path_;
 	using map_type = boost::container::flat_map<std::string, std::string>;
 	map_type addrs_;
@@ -30,7 +31,7 @@ class SingleDatabase : public QThread {
 	void add_mail_address(std::string, std::string);
 	Offset write_data(const std::string &raw);
 public:
-	SingleDatabase(std::string path);
+	explicit SingleDatabase(const std::string &path);
 	int naddrs() const {
 		return addrs_.size();
 	}

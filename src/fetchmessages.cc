@@ -10,23 +10,26 @@
 void fetchMessagesFrom(const std::string &source) {
 	log("Fetching messages from: "+source);
 	vmime::utility::url url(source);
+	auto ms = std::make_shared<MailStore>();
 	auto isMaildir = url.getProtocol() == std::string("maildir");
-	auto session = vmime::make_shared<vmime::net::session>();
-	auto store = session->getStore(url);
-	store->connect();
-	vmime::shared_ptr<vmime::net::folder> inbox;
+	ms->session = vmime::make_shared<vmime::net::session>();
+	ms->store = ms->session->getStore(url);
+	ms->store->connect();
 	if(isMaildir)
-		inbox = store->getFolder(vmime::utility::path(""));
+		ms->folder = ms->store->getFolder(vmime::utility::path(""));
 	else
-		inbox = store->getFolder(vmime::utility::path(url.getPath()));
-	inbox->open(vmime::net::folder::MODE_READ_ONLY);
+		ms->folder = ms->store->getFolder(vmime::utility::path(url.getPath()));
+	ms->folder->open(vmime::net::folder::MODE_READ_ONLY);
 	int max = -1;
 	if(isMaildir)
-		max = inbox->getMessageCount();
-	auto msgs = inbox->getMessages(vmime::net::messageSet::byNumber(1, max));
-	inbox->fetchMessages(msgs, vmime::net::fetchAttributes::STRUCTURE | vmime::net::fetchAttributes::FLAGS | vmime::net::fetchAttributes::FULL_HEADER);
+		max = ms->folder->getMessageCount();
+	auto msgs = ms->folder->getMessages(vmime::net::messageSet::byNumber(1, max));
+	ms->folder->fetchMessages(msgs,
+							  vmime::net::fetchAttributes::STRUCTURE |
+							  vmime::net::fetchAttributes::FLAGS |
+							  vmime::net::fetchAttributes::FULL_HEADER);
 	for(auto&& msg : msgs)
-		Database::instance()->add_message(std::make_shared<MailMessage>(msg));
+		Database::instance()->add_message(std::make_shared<MailMessage>(msg, ms));
 }
 
 void fetchMessages() {

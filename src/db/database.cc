@@ -15,6 +15,8 @@ extern "C" {
 
 
 void Database::scan_subdirs_for_databases(const std::string &dirname) {
+	if(dirname.empty())
+		return;
 	auto dir = std::unique_ptr<DIR, std::function<void(DIR*)>>(opendir(dirname.c_str()), [](DIR * d) {
 		closedir(d);
 	});
@@ -63,7 +65,7 @@ void Database::add_message(const std::shared_ptr<MailMessage> &msg) {
 			return;
 		}
 		QMetaObject::invokeMethod(sdb, "add_message", Qt::QueuedConnection,
-								  Q_ARG(std::shared_ptr<MailMessage>, msg));
+								  Q_ARG(const std::shared_ptr<MailMessage>&, msg));
 	};
 	auto scriptSource = QSettings().value("mail_sort").toString().toUtf8();
 	L(scriptSource.data());
