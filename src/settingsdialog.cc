@@ -18,18 +18,16 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 	auto mailFrame = new QFrame;
 	int i = 0;
 	auto gl = new QGridLayout;
-	s_.beginGroup("mail");
 
 	gl->addWidget(new QLabel("From"), i, 0);
 	from_ = new QTextEdit;
-	from_->setPlainText(s_.value("from").toStringList().join('\n'));
+	from_->setPlainText(s_.value("mail_from").toStringList().join('\n'));
 	gl->addWidget(from_, i++, 1);
 
 	gl->addWidget(new QLabel("Sources"), i, 0);
 	mail_sources_ = new QTextEdit;
-	mail_sources_->setPlainText(s_.value("sources").toStringList().join('\n'));
+	mail_sources_->setPlainText(s_.value("mail_sources").toStringList().join('\n'));
 	gl->addWidget(mail_sources_, i++, 1);
-	s_.endGroup();
   
 	gl->addWidget(new QLabel("Database"), i, 0);
 	mail_db_ = new QLineEdit;
@@ -58,10 +56,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 }
 
 void SettingsDialog::accept() {
-	s_.beginGroup("mail");
-	s_.setValue("from", from_->toPlainText().split('\n', QString::SkipEmptyParts));
-	s_.setValue("sources", mail_sources_->toPlainText().split('\n', QString::SkipEmptyParts));
-	s_.endGroup();
+	s_.setValue("mail_from", from_->toPlainText().split('\n', QString::SkipEmptyParts));
+	s_.setValue("mail_sources", mail_sources_->toPlainText().split('\n', QString::SkipEmptyParts));
 	s_.setValue("mail_db", mail_db_->text());
 	s_.setValue("mail_sort", mail_sort_->toPlainText());
 	close();
