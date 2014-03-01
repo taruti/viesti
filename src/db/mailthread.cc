@@ -50,10 +50,7 @@ bool MailThread::contains(const Digest &qmid) const {
 	return std::find(mids_.begin(), mids_.end(), qmid) != mids_.end();
 }
 
-#include <iostream>
 void MailThread::join(const MailThread &o) {
-	std::cout << "J0\t" << dump() << "\n";
-	std::cout << "J1\t" << o.dump() << "\n";
 	if(o.utc_date1_ > utc_date1_) {
 		utc_date1_ = o.utc_date1_;
 		subject_ = o.subject_;
@@ -91,10 +88,3 @@ MailThread MailThread::decode(const std::string &s) {
 }
 
 
-#include <cereal/archives/json.hpp>
-std::string MailThread::dump() const {
-	std::stringstream ss;
-	cereal::JSONOutputArchive oa {ss};
-	oa(*this);
-	return ss.str();
-}
