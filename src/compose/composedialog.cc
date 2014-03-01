@@ -1,5 +1,4 @@
 #include <QAction>
-#include <QComboBox>
 #include <QFileDialog>
 #include <QGridLayout>
 #include <QLabel>
@@ -24,8 +23,6 @@ static QAction* new_act(QWidget *wdg, const QString &text, T functor) {
 }
 
 ComposeDialog::ComposeDialog(QWidget *parent) : QDialog(parent) {
-	QSettings s;
-	s.beginGroup("mail");
 	auto vb = new QVBoxLayout;
 	auto gl = new QGridLayout;
 	vb->addLayout(gl);
@@ -36,10 +33,9 @@ ComposeDialog::ComposeDialog(QWidget *parent) : QDialog(parent) {
 	gl->addWidget(su, 0, 1);
 	gl->addWidget(new QLabel("To"), 1, 0);
 	gl->addWidget(new QLabel("From"), 2, 0);
-	auto fc = new QComboBox;
-	fc->addItems(s.value("from").toStringList());
-	fc->setEditable(true);
-	gl->addWidget(fc, 2, 1);
+	from_ = new QComboBox;
+	from_->setEditable(true);
+	gl->addWidget(from_, 2, 1);
 	auto tb = new QToolBar;
 	new_act(tb, "Send", []() {});
 	//	new_act(tb, "Attach", [](){
@@ -65,4 +61,11 @@ ComposeDialog::ComposeDialog(QWidget *parent) : QDialog(parent) {
 	vb->addWidget(te);
 	vb->setStretchFactor(te, 100);
 	setLayout(vb);
+}
+
+void ComposeDialog::showEvent(QShowEvent *event) {
+	QSettings s;
+	from_->clear();
+	from_->addItems(s.value("mail_from").toStringList());
+	QDialog::showEvent(event);
 }
