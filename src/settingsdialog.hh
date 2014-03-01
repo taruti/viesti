@@ -15,6 +15,7 @@ class SettingsDialog : public QDialog {
 	QLineEdit *mail_db_;
 public:
 	SettingsDialog(QWidget *parent = nullptr);
+	static SettingsDialog* instance();
 public slots:
 	virtual void accept() override;
 };

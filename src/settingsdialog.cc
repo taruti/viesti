@@ -62,3 +62,8 @@ void SettingsDialog::accept() {
 	s_.setValue("mail_sort", mail_sort_->toPlainText());
 	close();
 }
+
+SettingsDialog* SettingsDialog::instance() {
+	static SettingsDialog s;
+	return &s
+}

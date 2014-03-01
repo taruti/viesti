@@ -9,11 +9,6 @@ static ComposeDialog* composeDialog() {
 	return sa;
 }
 
-static SettingsDialog* settingsDialog() {
-	static SettingsDialog *sa = new SettingsDialog;
-	return sa;
-}
-
 void fetchMessages();
 
 MainWindow::MainWindow(QWidget *parent)
@@ -38,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 	// ctrl-p settings
 	act = new QAction(this);
 	act->setShortcut(Qt::Key_P | Qt::CTRL);
-	connect(act, &QAction::triggered, []() { settingsDialog()->show(); });
+	connect(act, &QAction::triggered, []() { SettingsDialog::instance()->show(); });
 	this->addAction(act);
 	// ctrl-q quit
 	act = new QAction(this);
