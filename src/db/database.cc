@@ -1,7 +1,12 @@
-#include <memory>
-#include <stdexcept>
 #include "database.hh"
 #include "globals.hh"
+
+#include <memory>
+#include <stdexcept>
+
+#include <QSettings>
+#include <selene.h>
+
 
 extern "C" {
 #include <sys/types.h>
@@ -35,6 +40,33 @@ void Database::scan_subdirs_for_databases(const std::string &dirname) {
 		std::lock_guard<std::mutex> guard(l_);
 		m_[name] = std::move(sdb);
 	}
+}
+
+void Database::add_message(const std::shared_ptr<MailMessage> &msg) {
+	sel::State L;
+	L["from"] = msg->from();
+	L["subject"] = msg->subject();
+	L["year"] = msg->year();
+	L["log"] = [](std::string msg) { log(msg); };
+	L["match_from"] = [&](std::string f) { return msg->match_from(f); };
+	L["match_addr"] = [&](std::string f) { return msg->match_addr(f); };
+	L["store"] = [&](std::string s) {
+		SingleDatabase* sdb = nullptr;
+		{
+			std::lock_guard<std::mutex> guard(l_);
+			auto it = m_.find(s);
+			if(it != m_.end())
+				sdb = it->second.get();
+		}
+		if(!sdb) {
+			log("Database not found: "+s);
+			return;
+		}
+		QMetaObject::invokeMethod(sdb, "add_message", Qt::QueuedConnection,
+								  Q_ARG(std::shared_ptr<MailMessage>, msg));
+	};
+	auto scriptSource = QSettings().value("mail_sort").toString().toUtf8();
+	L(scriptSource.data());
 }
 
 Database* Database::instance() {

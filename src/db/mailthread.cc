@@ -17,9 +17,9 @@ static void vector_add(std::vector<std::string>&vec, std::string s) {
 		vec.push_back(s);
 }
 
-void MailThread::add_message(i64 id, const vmime::message &msg) {
+void MailThread::add_message(i64 id, MailMessage &msg) {
 	msgs_.push_back(id);
-	auto hdr = msg.getHeader();
+	auto hdr = msg.hdr();
 	mids_.emplace_back(hdr->MessageId()->getValue<vmime::messageId>()->getId());
 	auto ldate = hdr->Date()->getValue<vmime::datetime>();
 	struct std::tm tm;

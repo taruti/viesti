@@ -1,16 +1,13 @@
-#include <functional>
-#include <QSettings>
-#include <selene.h>
-#include <vmime/vmime.hpp>
-
-#include "logwindow.hh"
+#include "db/database.hh"
 #include "db/globals.hh"
 #include "db/mailmessage.hh"
+#include "logwindow.hh"
 
-#include <iostream>
+#include <functional>
+#include <QSettings>
+#include <vmime/vmime.hpp>
 
-
-void fetchMessagesFrom(const std::string &source, const std::string &scriptSource) {
+void fetchMessagesFrom(const std::string &source) {
 	log("Fetching messages from: "+source);
 	vmime::utility::url url(source);
 	auto isMaildir = url.getProtocol() == std::string("maildir");
@@ -28,32 +25,16 @@ void fetchMessagesFrom(const std::string &source, const std::string &scriptSourc
 		max = inbox->getMessageCount();
 	auto msgs = inbox->getMessages(vmime::net::messageSet::byNumber(1, max));
 	inbox->fetchMessages(msgs, vmime::net::fetchAttributes::STRUCTURE | vmime::net::fetchAttributes::FLAGS | vmime::net::fetchAttributes::FULL_HEADER);
-	for(auto&& msg : msgs) {
-		MailMessage mm(msg);
-		auto hdr = msg->getHeader();
-		sel::State L;
-		std::string from;
-		if(hdr->hasField("From"))
-			from = hdr->From()->getValue<vmime::mailbox>()->getEmail().toString();
-		L["from"] = from;
-		L["subject"] = hdr->Subject()->getValue<vmime::text>()->getConvertedText(utf8);
-		L["year"] = hdr->Date()->getValue<vmime::datetime>()->getYear();
-		L["log"] = [](std::string msg) { log(msg); };
-		L["match_from"] = [&](std::string f) { return mm.match_from(f); };
-		L["match_addr"] = [&](std::string f) { return mm.match_addr(f); };
-		L["store"] = [&](std::string s) { std::cout<<s<<"\n"; };
-		L(scriptSource.c_str());
-	}
+	for(auto&& msg : msgs)
+		Database::instance()->add_message(std::make_shared<MailMessage>(msg));
 }
 
 void fetchMessages() {
 	QSettings s;
-	auto script = s.value("mail_sort").toString().toStdString();
-	s.beginGroup("mail");
-	auto sources = s.value("sources").toStringList();
+	auto sources = s.value("mail_sources").toStringList();
 	for(auto it = sources.constBegin(); it != sources.constEnd(); ++it)
 		try {
-			fetchMessagesFrom(it->toStdString(), script);
+			fetchMessagesFrom(it->toStdString());
 		} catch(std::exception &e) {
 			log(std::string("Exception while fetching messages: ")+e.what());
 		}

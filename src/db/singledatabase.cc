@@ -1,6 +1,8 @@
+#include <mutex>
 #include <vmime/vmime.hpp>
 
 #include "globals.hh"
+#include "mailmessage.hh"
 #include "mailthread.hh"
 #include "singledatabase.hh"
 #include "../util/digest.hh"
@@ -13,8 +15,11 @@ extern "C" {
 #include <lz4.h>
 #include <lz4hc.h>
 }
+ 
+std::once_flag meta_init_flag;
 
 SingleDatabase::SingleDatabase(std::string path) : path_(std::move(path)) {
+	std::call_once(meta_init_flag, []() { qRegisterMetaType<std::shared_ptr<MailMessage>>(); });
 	mkdir(path_.c_str(), 0700);
 	Fd fd {open((path_ + "/mailbox").c_str(), O_APPEND | O_CREAT | O_RDWR, 0600)};
 	if(fd.fd() < 0)
@@ -36,15 +41,15 @@ void SingleDatabase::add_mail_address(std::string email, std::string name) {
 }
 
 void SingleDatabase::add_addresses(vmime::shared_ptr<vmime::header> &hdr) {
-	if(hdr->hasField("From")) {
-		auto mb = hdr->From()->getValue<vmime::mailbox>();
+	if(auto f = hdr->findField("From")) {
+		auto mb = f->getValue<vmime::mailbox>();
 		add_mail_address(mb->getName().getConvertedText(utf8), mb->getEmail().toString());
 	}
 	for(auto && name : {
 				"To", "Cc", "Bcc"
 			}) {
-		if(hdr->hasField(name))
-			for(auto && mb : hdr->getField(name)->getValue<vmime::addressList>()->toMailboxList()->getMailboxList())
+		if(auto f = hdr->findField(name))
+			for(auto && mb : f->getValue<vmime::addressList>()->toMailboxList()->getMailboxList())
 				add_mail_address(mb->getEmail().toString(), mb->getName().getConvertedText(utf8));
 	}
 }
@@ -72,9 +77,9 @@ Offset SingleDatabase::write_data(const std::string& data) {
 	return res;
 }
 
-void SingleDatabase::add_message(const std::string &raw) {
+void SingleDatabase::add_message(const std::shared_ptr<MailMessage>& mm) {
 	vmime::message msg;
-	msg.parse(raw);
+	msg.parse(mm->raw());
 	auto hdr = msg.getHeader();
 	auto qmid = Digest {hdr->MessageId()->getValue<vmime::messageId>()->getId()};
 	std::vector<std::string> qmids;
@@ -135,8 +140,8 @@ void SingleDatabase::add_message(const std::string &raw) {
 	tg.index_text(contents);
 	for(auto && e : qmids)
 		doc.add_boolean_term(e);
-	auto off = write_data(raw);
-	mt.add_message(off, msg);
+	auto off = write_data(mm->raw());
+	mt.add_message(off, *mm.get());
 	doc.set_data(mt.encode());
 	if(update)
 		db_.replace_document(doc.get_docid(), doc);

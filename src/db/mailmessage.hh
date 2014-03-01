@@ -3,18 +3,50 @@
 
 #include <vmime/vmime.hpp>
 
+#include "globals.hh"
+
 extern "C" {
 #include <sys/types.h>
 #include <regex.h>
 }
 
 class MailMessage {
+	std::string raw_cache_ = {};
 	vmime::shared_ptr<vmime::net::message> msg_;
 	vmime::shared_ptr<const vmime::header> hdr_;
 public:
 	MailMessage(vmime::shared_ptr<vmime::net::message> msg) :
 		msg_(msg), hdr_(msg_->getHeader())
 		{}
+
+	// Get raw message source
+	std::string& raw() {
+		if(raw_cache_.size() == 0) {
+			vmime::utility::outputStreamStringAdapter ossa(raw_cache_);
+			msg_->extract(ossa, nullptr);
+		}
+		return raw_cache_;
+	}
+
+	std::string from() const {
+		auto f = hdr_->findField("From");
+		if(!f)
+			return "";
+		return f->getValue<vmime::mailbox>()->getEmail().toString();
+	}
+
+	std::string subject() const {
+		auto f = hdr_->findField("Subject");
+		if(!f)
+			return "";
+		return f->getValue<vmime::text>()->getConvertedText(utf8);
+	}
+
+	vmime::shared_ptr<const vmime::header> hdr() const { return hdr_; }
+
+	int year() const {
+		return hdr_->Date()->getValue<vmime::datetime>()->getYear();
+	}
 
 	// Match From against a regex
 	bool match_from(std::string regex) {

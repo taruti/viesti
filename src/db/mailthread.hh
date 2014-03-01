@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "mailmessage.hh"
 #include "../util/common.hh"
 #include "../util/digest.hh"
 
@@ -40,7 +41,7 @@ public:
 		return *this;
 	}
 	bool contains(const Digest &qmid) const;
-	void add_message(i64 id, const vmime::message &msg);
+	void add_message(i64 id, MailMessage &msg);
 	void join(const MailThread &thread);
 	std::string date() const;
 	std::vector<std::string> from() const {

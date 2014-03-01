@@ -16,7 +16,9 @@ class Database {
 public:
 	static Database* instance();
 	void scan_subdirs_for_databases(const std::string &dir);
-
+public slots:
+	// Add a message, in a shared_ptr to avoid copying
+	void add_message(const std::shared_ptr<MailMessage> &msg);
 };
 
 #endif /* DATABASE_HH */
