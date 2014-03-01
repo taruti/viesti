@@ -11,35 +11,36 @@ static ComposeDialog* composeDialog() {
 
 void fetchMessages();
 
+template<typename This, typename Lambda>
+static void add_action(This obj, const QKeySequence &shortcut, Lambda lambda) {
+	auto act = new QAction(obj);
+	act->setShortcut(shortcut);
+	QObject::connect(act, &QAction::triggered, lambda);
+	obj->addAction(act);
+}
+
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
 	setWindowTitle("viesti");
 	// ctrl-f fetch messages
-	auto act = new QAction(this);
-	act->setShortcut(Qt::Key_F | Qt::CTRL);
-	connect(act, &QAction::triggered, fetchMessages);
-	this->addAction(act);
+	add_action(this, Qt::Key_F | Qt::CTRL, fetchMessages);
 	// ctrl-l log window
-	act = new QAction(this);
-	act->setShortcut(Qt::Key_L | Qt::CTRL);
-	connect(act, &QAction::triggered, []() { LogWindow::instance()->show(); });
-	this->addAction(act);
+	add_action(this, Qt::Key_L | Qt::CTRL, []() {
+		LogWindow::instance()->show();
+	});
 	// ctrl-n compose message
-	act = new QAction(this);
-	act->setShortcut(Qt::Key_N | Qt::CTRL);
-	connect(act, &QAction::triggered, []() { composeDialog()->show(); });
-	this->addAction(act);
+	add_action(this, Qt::Key_N | Qt::CTRL, []() {
+		composeDialog()->show();
+	});
 	// ctrl-p settings
-	act = new QAction(this);
-	act->setShortcut(Qt::Key_P | Qt::CTRL);
-	connect(act, &QAction::triggered, []() { SettingsDialog::instance()->show(); });
-	this->addAction(act);
+	add_action(this, Qt::Key_P | Qt::CTRL, []() {
+		SettingsDialog::instance()->show();
+	});
 	// ctrl-q quit
-	act = new QAction(this);
-	act->setShortcut(Qt::Key_Q | Qt::CTRL);
-	connect(act, SIGNAL(triggered()), this, SLOT(close()));
-	this->addAction(act);
+	add_action(this, Qt::Key_Q | Qt::CTRL, [&]() {
+		emit close();
+	});
 }
 
 
