@@ -34,13 +34,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 	gl->addWidget(new QLabel("Database"), i, 0);
 	mail_db_ = new QLineEdit;
 	mail_db_->setText(s_.value("mail_db").toString());
-  auto db_l = new QHBoxLayout;
-  db_l->addWidget(mail_db_);
-  auto db_b = new QPushButton("Select");
-  connect(db_b, &QPushButton::pressed, [&]() {
-    mail_db_->setText(QFileDialog::getExistingDirectory(this, "Database directory", "",  QFileDialog::ShowDirsOnly));
-  });
-  db_l->addWidget(db_b);
+	auto db_l = new QHBoxLayout;
+	db_l->addWidget(mail_db_);
+	auto db_b = new QPushButton("Select");
+	connect(db_b, &QPushButton::pressed, [&]() {
+			mail_db_->setText(QFileDialog::getExistingDirectory(this, "Database directory", "",  QFileDialog::ShowDirsOnly));
+		});
+	db_l->addWidget(db_b);
 	gl->addLayout(db_l, i++, 1);
 
 
@@ -62,7 +62,7 @@ void SettingsDialog::accept() {
 	s_.setValue("from", from_->toPlainText().split('\n', QString::SkipEmptyParts));
 	s_.setValue("sources", mail_sources_->toPlainText().split('\n', QString::SkipEmptyParts));
 	s_.endGroup();
-  s_.setValue("mail_db", mail_db_->text());
+	s_.setValue("mail_db", mail_db_->text());
 	s_.setValue("mail_sort", mail_sort_->toPlainText());
 	close();
 }
