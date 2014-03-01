@@ -8,15 +8,12 @@
 
 #include <boost/container/flat_map.hpp>
 #include <xapian.h>
+#include <vmime/vmime.hpp>
 
 #include "../util/fd.hh"
 
 using Offset = std::int64_t;
 
-namespace vmime {
-	class header;
-	template<typename T> class shared_ptr;
-}
 
 class SingleDatabase {
 	std::string path_;
