@@ -18,7 +18,13 @@ extern "C" {
  
 std::once_flag meta_init_flag;
 
-SingleDatabase::SingleDatabase(const std::string &path) : path_(path) {
+std::unique_ptr<SingleDatabase> SingleDatabase::create(const std::string& path) {
+	return std::unique_ptr<SingleDatabase>(new SingleDatabase(path));
+}
+
+SingleDatabase::SingleDatabase(const std::string &path)
+	: path_(path) {
+	moveToThread(&thread_);
 	std::call_once(meta_init_flag, []() { qRegisterMetaType<std::shared_ptr<MailMessage>>(); });
 	mkdir(path_.c_str(), 0700);
 	Fd fd {open((path_ + "/mailbox").c_str(), O_APPEND | O_CREAT | O_RDWR, 0600)};
@@ -32,6 +38,7 @@ SingleDatabase::SingleDatabase(const std::string &path) : path_(path) {
 	db_ = Xapian::WritableDatabase(path_ + "/xapian.db", Xapian::DB_CREATE_OR_OPEN);
 	mailbox_offset_ = lseek(fd.fd(), 0, SEEK_END);
 	mailbox_ = std::move(fd);
+	thread_.start();
 }
 
 void SingleDatabase::add_mail_address(std::string email, std::string name) {

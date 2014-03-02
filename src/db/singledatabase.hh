@@ -19,7 +19,7 @@
 using Offset = std::int64_t;
 
 
-class SingleDatabase : public QThread {
+class SingleDatabase : public QObject {
 	Q_OBJECT
 	std::string path_;
 	using map_type = boost::container::flat_map<std::string, std::string>;
@@ -27,11 +27,13 @@ class SingleDatabase : public QThread {
 	Xapian::WritableDatabase db_;
 	Fd mailbox_;
 	Offset mailbox_offset_;
+	QThread thread_;
 	void add_addresses(vmime::shared_ptr<vmime::header> &hdr);
 	void add_mail_address(std::string, std::string);
 	Offset write_data(const std::string &raw);
-public:
 	explicit SingleDatabase(const std::string &path);
+public:
+	static std::unique_ptr<SingleDatabase> create(const std::string& path);
 	int naddrs() const {
 		return addrs_.size();
 	}

@@ -37,7 +37,7 @@ void Database::scan_subdirs_for_databases(const std::string &dirname) {
 		if(result->d_name[0] == '.')
 			continue;
 		std::string name {result->d_name};
-		auto sdb = std::unique_ptr<SingleDatabase>(new SingleDatabase(dirname + "/" + name));
+		auto sdb = SingleDatabase::create(dirname + "/" + name);
 		log("Adding database '"+name+"' from under: "+dirname);
 		std::lock_guard<std::mutex> guard(l_);
 		m_[name] = std::move(sdb);
